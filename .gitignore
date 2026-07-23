@@ -1,0 +1,38 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build output / publish
+publish/
+*.pdb
+*.dll
+*.exe
+!res/**/*.exe
+
+## Visual Studio
+.vs/
+*.vssscc
+*.vspscc
+
+## Rider / JetBrains
+.idea/
+
+## Installer output
+installer/Output/
+dist/
+
+## OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+## Logs
+*.log
+
+## Roadmap is intentionally excluded from GitHub per project convention
+ROADMAP.md
+ROADMAP.md

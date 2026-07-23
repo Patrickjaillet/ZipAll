@@ -1,0 +1,37 @@
+<Project>
+
+  <!--
+    Centralized version stamping.
+
+    Versioning scheme: MAJOR.MINOR.BUILD
+      - MAJOR moves to 1 at the v1.0.0 release (currently 0, pre-release).
+      - MINOR increments with each completed roadmap phase (0 = Phase 0).
+      - BUILD auto-increments on every build. Locally it falls back to an
+        MMdd timestamp (kept within the 0-65535 range required for Win32
+        file-version fields); in CI it is overridden by passing
+        /p:BuildNumber=$(CI_BUILD_NUMBER) to `dotnet build` / `dotnet publish`.
+  -->
+
+  <PropertyGroup>
+    <ZipAllMajor>0</ZipAllMajor>
+    <ZipAllMinor>9</ZipAllMinor>
+
+    <!-- Overridable from the command line: dotnet build /p:BuildNumber=123 -->
+    <BuildNumber Condition="'$(BuildNumber)' == ''">$([System.DateTime]::UtcNow.ToString('MMdd'))</BuildNumber>
+
+    <Version>$(ZipAllMajor).$(ZipAllMinor).$(BuildNumber)</Version>
+    <AssemblyVersion>$(ZipAllMajor).$(ZipAllMinor).0.0</AssemblyVersion>
+    <FileVersion>$(Version).0</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+
+    <Company>Patrick JAILLET</Company>
+    <Product>ZipAll</Product>
+    <Authors>Patrick JAILLET</Authors>
+    <Copyright>Copyright © 2026 Patrick JAILLET</Copyright>
+
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+</Project>

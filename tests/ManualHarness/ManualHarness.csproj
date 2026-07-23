@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>ZipAll.ManualHarness</RootNamespace>
+    <AssemblyName>ZipAll.ManualHarness</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ZipAll.Core\ZipAll.Core.csproj" />
+  </ItemGroup>
+
+</Project>
