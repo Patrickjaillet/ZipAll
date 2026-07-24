@@ -10,9 +10,12 @@ on every build, `MAJOR` moves to `1` at the v1.0.0 release).
 ## [Unreleased]
 ### Added
 - `CONTRIBUTING.md`: contribution ground rules (C#/.NET/WinForms-only, English-only, no source comments, White theme only, Windows-only, BCL-only archive format, self-contained-only dependencies), PR checklist, and bug report template.
+- `tests/ZipAll.Core.Tests`: xUnit unit test project (39 tests) covering `WildcardMatcher`, `ExclusionEngine`, `DirectoryWalker`, and `ArchiveWriter`/`ArchiveVerifier`, including empty folders, deeply nested trees, Unicode/special-character file names, and large flat trees; added to `ZipAll.sln`.
+- `tests/REGRESSION_CHECKLIST.md`: manual regression checklist to run against a built installer before every release.
 ### Fixed
 - `installer/ZipAll.iss`: `AppId` GUID was mis-escaped in the `#define`, causing the Inno Setup preprocessor to mistake it for an unknown `{constant}` and abort compilation; fixed by doubling the opening brace (`"{{...}"`).
 - `installer/ZipAll.iss`: the `[Files]` wildcard entry excluded every file produced by the self-contained single-file publish (the `.exe` and its `.pdb`), leaving zero matches and aborting the build with "No files found matching"; fixed by adding the `skipifsourcedoesntexist` flag.
+- `ArchiveWriter.CreateArchiveAsync` read `ZipArchiveEntry.Length`/`CompressedLength` after writing each entry to accumulate size statistics, but those properties unconditionally throw `InvalidOperationException` in `ZipArchiveMode.Create` — every archive containing at least one file was broken. Fixed by deriving the raw size from the already-known file length and the compressed size from the underlying zip stream's position delta (minus local file header overhead), found while writing the new unit test suite.
 ### Changed
 - `README.md` fully rewritten from the Phase 0 stub: feature list, installation instructions, step-by-step usage guide, build instructions (debug/publish/installer for both `build.ps1` and `build.sh`), project layout, and a screenshot placeholder section.
 - `docs/README.md` clarifies that `docs/screenshot.png` requires a real Windows desktop/VM session to capture and cannot be produced from this project's Linux-based authoring environment.

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Text;
 
 namespace ZipAll.Core;
 
@@ -52,6 +53,7 @@ public static class ArchiveWriter
                 {
                     var entryName = entry.RelativePath.Replace(Path.DirectorySeparatorChar, '/');
                     var rawLength = new FileInfo(entry.FullPath).Length;
+                    var positionBeforeEntry = zipStream.Position;
 
                     byte[]? bufferedContent = null;
                     CompressionLevel effectiveLevel;
@@ -95,8 +97,15 @@ public static class ArchiveWriter
                         }
                     }
 
-                    totalRawBytes += zipEntry.Length;
-                    totalCompressedBytes += zipEntry.CompressedLength;
+                    // ZipArchiveEntry.Length/CompressedLength throw InvalidOperationException
+                    // for the whole lifetime of an entry in ZipArchiveMode.Create, so the
+                    // written byte counts are derived from the underlying stream position instead,
+                    // minus the local file header (30 bytes + entry name) that position delta also covers.
+                    var localHeaderOverhead = 30 + Encoding.UTF8.GetByteCount(entryName);
+                    var entryBytesOnDisk = zipStream.Position - positionBeforeEntry - localHeaderOverhead;
+
+                    totalRawBytes += rawLength;
+                    totalCompressedBytes += Math.Max(0L, entryBytesOnDisk);
                     writtenCount++;
 
                     if (effectiveLevel == CompressionLevel.NoCompression)
