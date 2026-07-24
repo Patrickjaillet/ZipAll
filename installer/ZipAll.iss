@@ -16,7 +16,7 @@
 #define MyAppPublisher "Patrick JAILLET"
 #define MyAppURL "https://patrickjaillet.github.io/sandefjord-software"
 #define MyAppExeName "ZipAll.exe"
-#define MyAppId "{925D1032-1AFC-48B1-930C-43AB325955E0}"
+#define MyAppId "{{925D1032-1AFC-48B1-930C-43AB325955E0}"
 #define PublishDir "..\publish"
 
 [Setup]
@@ -61,7 +61,7 @@ Source: "{#PublishDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 ; Everything else the self-contained publish produced (native runtime bits
 ; not embedded in the single file, if any). Debug symbols are left out of
 ; the end-user installer on purpose.
-Source: "{#PublishDir}\*"; DestDir: "{app}"; Excludes: "{#MyAppExeName},*.pdb"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PublishDir}\*"; DestDir: "{app}"; Excludes: "{#MyAppExeName},*.pdb"; Flags: ignoreversion recursesubdirs createallsubdirs skipifsourcedoesntexist
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

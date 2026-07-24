@@ -10,10 +10,14 @@ on every build, `MAJOR` moves to `1` at the v1.0.0 release).
 ## [Unreleased]
 ### Added
 - `CONTRIBUTING.md`: contribution ground rules (C#/.NET/WinForms-only, English-only, no source comments, White theme only, Windows-only, BCL-only archive format, self-contained-only dependencies), PR checklist, and bug report template.
+### Fixed
+- `installer/ZipAll.iss`: `AppId` GUID was mis-escaped in the `#define`, causing the Inno Setup preprocessor to mistake it for an unknown `{constant}` and abort compilation; fixed by doubling the opening brace (`"{{...}"`).
+- `installer/ZipAll.iss`: the `[Files]` wildcard entry excluded every file produced by the self-contained single-file publish (the `.exe` and its `.pdb`), leaving zero matches and aborting the build with "No files found matching"; fixed by adding the `skipifsourcedoesntexist` flag.
 ### Changed
 - `README.md` fully rewritten from the Phase 0 stub: feature list, installation instructions, step-by-step usage guide, build instructions (debug/publish/installer for both `build.ps1` and `build.sh`), project layout, and a screenshot placeholder section.
 - `docs/README.md` clarifies that `docs/screenshot.png` requires a real Windows desktop/VM session to capture and cannot be produced from this project's Linux-based authoring environment.
 - Local Git repository initialized and the full project history committed, ready to be pushed to `https://github.com/Patrickjaillet/ZipAll` by the project owner (pushing itself requires credentials this environment does not have).
+- Installer build and install/uninstall cycle verified end-to-end on a Windows 10 machine with the .NET SDK and Inno Setup 6 installed: `build.ps1 -Installer` now produces `dist/ZipAllSetup-<version>.exe`, which installs silently, launches correctly, and uninstalls cleanly with no residual files.
 
 ## [0.8.0] - 2026-07-24
 ### Added
