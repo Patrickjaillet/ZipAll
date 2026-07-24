@@ -2,7 +2,7 @@
 
 A small, native Windows desktop app (C#/.NET, WinForms) that zips a folder — with exclusions, a custom archive name, and a choice of destination.
 
-*(Screenshot pending — see [Screenshot](#screenshot) below.)*
+![ZipAll main window](docs/screenshot.png)
 
 ## Features
 
@@ -69,13 +69,17 @@ src/ZipAll.Core/   Core library: directory walker, exclusion engine, ZIP writer/
 src/ZipAll/        WinForms application (main window, About tab, Program.cs entry point)
 res/icons/         Application and installer icons (multi-resolution .ico, plus 256x256 source PNGs)
 installer/         Inno Setup script (ZipAll.iss) that packages the self-contained publish output
-tests/             Manual round-trip test harnesses (ManualHarness, ExclusionHarness)
+tests/             ZipAll.Core.Tests (xUnit) plus manual round-trip harnesses (ManualHarness, ExclusionHarness)
 docs/              Documentation assets (screenshot.png)
 ```
 
-## Screenshot
+### Running the tests
 
-`docs/screenshot.png` has not been captured yet — it needs a real Windows desktop session (WinForms doesn't render in this project's Linux-based build/authoring environment). Once available, it will show the main window mid-compression with the exclusion list populated.
+```powershell
+dotnet test tests/ZipAll.Core.Tests/ZipAll.Core.Tests.csproj
+```
+
+See [`tests/REGRESSION_CHECKLIST.md`](tests/REGRESSION_CHECKLIST.md) for the manual pass to run against a built installer before every release.
 
 ## License
 

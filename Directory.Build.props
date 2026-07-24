@@ -4,7 +4,7 @@
     Centralized version stamping.
 
     Versioning scheme: MAJOR.MINOR.BUILD
-      - MAJOR moves to 1 at the v1.0.0 release (currently 0, pre-release).
+      - MAJOR moves to 1 at the v1.0.0 release.
       - MINOR increments with each completed roadmap phase (0 = Phase 0).
       - BUILD auto-increments on every build. Locally it falls back to an
         MMdd timestamp (kept within the 0-65535 range required for Win32
@@ -13,8 +13,8 @@
   -->
 
   <PropertyGroup>
-    <ZipAllMajor>0</ZipAllMajor>
-    <ZipAllMinor>9</ZipAllMinor>
+    <ZipAllMajor>1</ZipAllMajor>
+    <ZipAllMinor>0</ZipAllMinor>
 
     <!-- Overridable from the command line: dotnet build /p:BuildNumber=123 -->
     <BuildNumber Condition="'$(BuildNumber)' == ''">$([System.DateTime]::UtcNow.ToString('MMdd'))</BuildNumber>
