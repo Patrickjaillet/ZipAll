@@ -14,7 +14,7 @@
 
   <PropertyGroup>
     <ZipAllMajor>1</ZipAllMajor>
-    <ZipAllMinor>0</ZipAllMinor>
+    <ZipAllMinor>1</ZipAllMinor>
 
     <!-- Overridable from the command line: dotnet build /p:BuildNumber=123 -->
     <BuildNumber Condition="'$(BuildNumber)' == ''">$([System.DateTime]::UtcNow.ToString('MMdd'))</BuildNumber>

@@ -8,6 +8,8 @@ and this project adheres to a `MAJOR.MINOR.BUILD` versioning scheme
 on every build, `MAJOR` moves to `1` at the v1.0.0 release).
 
 ## [Unreleased]
+
+## [1.1.0] - 2026-07-24
 ### Added
 - Drag & drop: dropping a folder from Windows Explorer onto the Source group sets it as the source directory and prefills the archive name from the folder name.
 - Password-protected archives: an optional "Password-protect" checkbox and password field produce AES-256 encrypted `.zip` files via [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) (`EncryptedArchiveWriter`/`EncryptedArchiveVerifier` in `ZipAll.Core`), alongside the existing unencrypted Stored/Deflate path.
