@@ -23,6 +23,66 @@ public partial class MainForm : Form
             this.Icon = _appIcon;
             picAboutIcon.Image = _appIcon.ToBitmap();
         }
+
+        grpSource.AllowDrop = true;
+        grpSource.DragEnter += grpSource_DragEnter;
+        grpSource.DragDrop += grpSource_DragDrop;
+        txtSourceDirectory.AllowDrop = true;
+        txtSourceDirectory.DragEnter += grpSource_DragEnter;
+        txtSourceDirectory.DragDrop += grpSource_DragDrop;
+    }
+
+    public void SetSourceDirectory(string directory)
+    {
+        txtSourceDirectory.Text = directory;
+
+        if (string.IsNullOrWhiteSpace(txtArchiveName.Text) || txtArchiveName.Text == "archive")
+        {
+            var folderName = new DirectoryInfo(directory).Name;
+
+            if (!string.IsNullOrEmpty(folderName) && folderName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+            {
+                txtArchiveName.Text = folderName;
+            }
+        }
+    }
+
+    private static void grpSource_DragEnter(object? sender, DragEventArgs e)
+    {
+        e.Effect = TryGetDroppedDirectory(e.Data, out _) ? DragDropEffects.Copy : DragDropEffects.None;
+    }
+
+    private void grpSource_DragDrop(object? sender, DragEventArgs e)
+    {
+        if (TryGetDroppedDirectory(e.Data, out var directory))
+        {
+            SetSourceDirectory(directory);
+        }
+    }
+
+    private static bool TryGetDroppedDirectory(IDataObject? data, out string directory)
+    {
+        directory = string.Empty;
+
+        if (data is null || !data.GetDataPresent(DataFormats.FileDrop))
+        {
+            return false;
+        }
+
+        if (data.GetData(DataFormats.FileDrop) is not string[] paths || paths.Length == 0)
+        {
+            return false;
+        }
+
+        var candidate = paths[0];
+
+        if (!Directory.Exists(candidate))
+        {
+            return false;
+        }
+
+        directory = candidate;
+        return true;
     }
 
     private void btnBrowseSource_Click(object? sender, EventArgs e)
@@ -112,6 +172,7 @@ public partial class MainForm : Form
             return;
         }
 
+        var password = chkPasswordProtect.Checked ? txtPassword.Text : null;
         var exclusions = BuildExclusionEngine();
 
         SetBusyState(true);
@@ -138,15 +199,26 @@ public partial class MainForm : Form
                 lblStatus.Text = $"Compressing {processed} of {totalFiles}: {entry.RelativePath}";
             });
 
-            var result = await ArchiveWriter.CreateArchiveAsync(
-                sourceDirectory,
-                destinationZipPath,
-                exclusions,
-                compressionMode,
-                progress,
-                _cts.Token);
+            var result = string.IsNullOrEmpty(password)
+                ? await ArchiveWriter.CreateArchiveAsync(
+                    sourceDirectory,
+                    destinationZipPath,
+                    exclusions,
+                    compressionMode,
+                    progress,
+                    _cts.Token)
+                : await EncryptedArchiveWriter.CreateArchiveAsync(
+                    sourceDirectory,
+                    destinationZipPath,
+                    password,
+                    exclusions,
+                    compressionMode,
+                    progress,
+                    _cts.Token);
 
-            var verification = ArchiveVerifier.Verify(destinationZipPath, result.EntryCount);
+            var verification = string.IsNullOrEmpty(password)
+                ? ArchiveVerifier.Verify(destinationZipPath, result.EntryCount)
+                : EncryptedArchiveVerifier.Verify(destinationZipPath, password, result.EntryCount);
 
             if (verification.Success)
             {
@@ -211,6 +283,11 @@ public partial class MainForm : Form
             _cts = null;
             SetBusyState(false);
         }
+    }
+
+    private void chkPasswordProtect_CheckedChanged(object? sender, EventArgs e)
+    {
+        txtPassword.Enabled = chkPasswordProtect.Checked;
     }
 
     private void btnCancel_Click(object? sender, EventArgs e)
@@ -279,6 +356,12 @@ public partial class MainForm : Form
             return false;
         }
 
+        if (chkPasswordProtect.Checked && string.IsNullOrEmpty(txtPassword.Text))
+        {
+            MessageBox.Show(this, "Please enter a password, or uncheck password protection.", "ZipAll", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return false;
+        }
+
         destinationZipPath = Path.Combine(destinationFolder, archiveName);
         return true;
     }
@@ -311,9 +394,13 @@ public partial class MainForm : Form
         txtArchiveName.Enabled = !busy;
         rbDeflate.Enabled = !busy;
         rbStored.Enabled = !busy;
+        chkPasswordProtect.Enabled = !busy;
+        txtPassword.Enabled = !busy && chkPasswordProtect.Checked;
         lstExclusions.Enabled = !busy;
         btnStart.Enabled = !busy;
         btnCancel.Enabled = busy;
+        grpSource.AllowDrop = !busy;
+        txtSourceDirectory.AllowDrop = !busy;
     }
 
     private static string FormatExclusion(string path, bool isDirectory) =>

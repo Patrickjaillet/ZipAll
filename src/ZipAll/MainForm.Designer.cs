@@ -23,6 +23,8 @@ partial class MainForm
     private GroupBox grpCompression;
     private RadioButton rbDeflate;
     private RadioButton rbStored;
+    private CheckBox chkPasswordProtect;
+    private TextBox txtPassword;
 
     private GroupBox grpExclusions;
     private ListBox lstExclusions;
@@ -75,6 +77,8 @@ partial class MainForm
         grpCompression = new GroupBox();
         rbDeflate = new RadioButton();
         rbStored = new RadioButton();
+        chkPasswordProtect = new CheckBox();
+        txtPassword = new TextBox();
 
         grpExclusions = new GroupBox();
         lstExclusions = new ListBox();
@@ -164,10 +168,12 @@ partial class MainForm
 
         grpCompression.BackColor = Color.White;
         grpCompression.Location = new Point(12, 188);
-        grpCompression.Size = new Size(600, 50);
+        grpCompression.Size = new Size(600, 80);
         grpCompression.Text = "Compression";
         grpCompression.Controls.Add(rbDeflate);
         grpCompression.Controls.Add(rbStored);
+        grpCompression.Controls.Add(chkPasswordProtect);
+        grpCompression.Controls.Add(txtPassword);
 
         rbDeflate.AutoSize = true;
         rbDeflate.Checked = true;
@@ -184,10 +190,23 @@ partial class MainForm
         rbStored.Text = "Stored (no compression)";
         rbStored.UseVisualStyleBackColor = true;
 
+        chkPasswordProtect.AutoSize = true;
+        chkPasswordProtect.Location = new Point(10, 52);
+        chkPasswordProtect.Size = new Size(130, 20);
+        chkPasswordProtect.Text = "Password-protect:";
+        chkPasswordProtect.UseVisualStyleBackColor = true;
+        chkPasswordProtect.CheckedChanged += chkPasswordProtect_CheckedChanged;
+
+        txtPassword.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        txtPassword.Enabled = false;
+        txtPassword.Location = new Point(150, 50);
+        txtPassword.PasswordChar = '●';
+        txtPassword.Size = new Size(300, 23);
+
         grpExclusions.BackColor = Color.White;
         grpExclusions.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-        grpExclusions.Location = new Point(12, 246);
-        grpExclusions.Size = new Size(600, 190);
+        grpExclusions.Location = new Point(12, 276);
+        grpExclusions.Size = new Size(600, 160);
         grpExclusions.Text = "Exclusions";
         grpExclusions.Controls.Add(lstExclusions);
         grpExclusions.Controls.Add(btnAddFileExclusion);

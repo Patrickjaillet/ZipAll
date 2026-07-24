@@ -54,6 +54,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "sendto"; Description: "Add ""Send to → ZipAll"" to the Windows Explorer Send To menu"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
 ; Main executable first, so it is easy to spot in the compiled script.
@@ -67,6 +68,7 @@ Source: "{#PublishDir}\*"; DestDir: "{app}"; Excludes: "{#MyAppExeName},*.pdb"; 
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{userappdata}\Microsoft\Windows\SendTo\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: sendto
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent

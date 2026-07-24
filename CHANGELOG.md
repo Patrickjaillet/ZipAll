@@ -8,6 +8,14 @@ and this project adheres to a `MAJOR.MINOR.BUILD` versioning scheme
 on every build, `MAJOR` moves to `1` at the v1.0.0 release).
 
 ## [Unreleased]
+### Added
+- Drag & drop: dropping a folder from Windows Explorer onto the Source group sets it as the source directory and prefills the archive name from the folder name.
+- Password-protected archives: an optional "Password-protect" checkbox and password field produce AES-256 encrypted `.zip` files via [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) (`EncryptedArchiveWriter`/`EncryptedArchiveVerifier` in `ZipAll.Core`), alongside the existing unencrypted Stored/Deflate path.
+- Command-line mode: `ZipAll.exe --source <dir> --dest <dir> [options]` compresses headlessly (`CliOptions`/`CliRunner`), sharing the same `ZipAll.Core` engine as the GUI, with `--help`, `--mode`, `--password`, repeatable `--exclude-file`/`--exclude-dir`, and `--quiet`. Running the exe with no arguments (or a single folder path) still opens the GUI.
+- Explorer "Send to" integration: an optional installer task adds a `ZipAll` shortcut to the current user's Send To folder; launching the app with a single folder argument (from Send To or otherwise) pre-fills that folder as the source in the GUI.
+- `tests/ZipAll.Core.Tests/EncryptedArchiveWriterTests.cs`: 6 additional unit tests covering password round-trips, wrong-password rejection, exclusions, Stored mode, and confirming an unencrypted reader cannot read the encrypted content.
+### Changed
+- `installer/ZipAll.iss`: new optional `sendto` task and `[Icons]` entry for the Send To shortcut.
 
 ## [1.0.0] - 2026-07-24
 ### Added

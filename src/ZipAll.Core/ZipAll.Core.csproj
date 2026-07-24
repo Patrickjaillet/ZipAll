@@ -6,4 +6,8 @@
     <AssemblyName>ZipAll.Core</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+  </ItemGroup>
+
 </Project>
